@@ -2182,6 +2182,17 @@ void Temperature::isr() {
   cli();
   in_temp_isr = false;
   SBI(TIMSK0, OCIE0B); //re-enable Temperature ISR
+  
+    DDRJ |= _BV(6);
+  if (current_temperature[0] > (EXTRUDER_AUTO_FAN_TEMPERATURE) || current_temperature[1] > (EXTRUDER_AUTO_FAN_TEMPERATURE)) 
+  {
+    PORTJ |= _BV(6);
+  }  
+  else if (current_temperature[0] < (EXTRUDER_AUTO_FAN_TEMPERATURE - 2 ) && current_temperature[1] < (EXTRUDER_AUTO_FAN_TEMPERATURE - 2 )) 
+  {
+    PORTJ &=~ _BV(6);
+  }
+  
 }
 
 #if HAS_TEMP_HOTEND || HAS_TEMP_BED
@@ -2275,3 +2286,6 @@ void Temperature::isr() {
   #endif // AUTO_REPORT_TEMPERATURES
 
 #endif // HAS_TEMP_HOTEND || HAS_TEMP_BED
+
+
+
